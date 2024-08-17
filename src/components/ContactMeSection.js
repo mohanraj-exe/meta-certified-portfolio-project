@@ -18,14 +18,14 @@ import useSubmit from "../hooks/useSubmit";
 import { useAlertContext } from "../context/alertContext";
 
 const LandingSection = () => {
-  const { isLoading, response, submit } = useSubmit();
+  const { isLoading, response, submit, clearResponse } = useSubmit();
   const { onOpen } = useAlertContext();
 
   const { errors, touched, getFieldProps, handleSubmit, resetForm } = useFormik({
     initialValues: {
       firstName: '',
       email: '',
-      type: 'hireMe',
+      type: '',
       comment: ''
     },
     onSubmit: (values) => {
@@ -37,6 +37,9 @@ const LandingSection = () => {
       email: Yup.string()
         .email('Please enter a valid email address')
         .required('Email is required'),
+      type: Yup.string()
+        .required('Selection is required')
+        .oneOf(['hireMe', 'openSource', 'other'], 'Invalid selection'),
       comment: Yup.string()
         .min(10, 'Must be 10 characters and above')
         .required("Comment is required"),
@@ -46,16 +49,17 @@ const LandingSection = () => {
   useEffect(() => {
     if (response) {
       onOpen(response.type, response.message);
+      clearResponse();
     }
     return () => {
       resetForm({
         values: {
           firstName: '',
           email: '',
-          type: 'hireMe',
+          type: '',
           comment: ''
         }
-      })
+      });
     }
   }, [response]);
 
@@ -92,15 +96,16 @@ const LandingSection = () => {
                 />
                 <FormErrorMessage>{errors.email}</FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={errors.type && touched.type ? true : false}>
                 <FormLabel htmlFor="type">Type of enquiry</FormLabel>
-                <Select id="type" name="type" {...getFieldProps('type')}>
+                <Select id="type" name="type" {...getFieldProps('type')} placeholder='Select option'>
                   <option value="hireMe">Freelance project proposal</option>
                   <option value="openSource">
                     Open source consultancy session
                   </option>
                   <option value="other">Other</option>
                 </Select>
+                <FormErrorMessage>{errors.type}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={errors.comment && touched.comment ? true : false}>
                 <FormLabel htmlFor="comment">Your message</FormLabel>

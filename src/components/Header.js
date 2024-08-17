@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -38,6 +38,27 @@ const socials = [
 ];
 
 const Header = () => {
+  const [showHeader, setShowHeader] = useState(true);
+  let lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      let currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current) {
+        setShowHeader(false);
+      } else {
+        setShowHeader(true)
+      }
+      lastScrollY.current = currentScrollY
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
@@ -56,6 +77,7 @@ const Header = () => {
       left={0}
       right={0}
       translateY={0}
+      transform={showHeader ? 'translateY(0)' : 'translateY(-200px)'}
       transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"

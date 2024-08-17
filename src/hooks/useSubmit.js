@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -9,6 +9,10 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const useSubmit = () => {
   const [isLoading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
+
+  // useEffect(() =>{
+  //   console.log(response);
+  // },[response])
 
   const submit = async (data) => {
     const random = Math.random();
@@ -31,7 +35,12 @@ const useSubmit = () => {
       setLoading(false);
     }
   };
-  return { isLoading, response, submit };
+  const clearResponse = () => {
+    // console.log("clear response triggered.")
+    setResponse(null);
+  };
+
+  return { isLoading, response, submit, clearResponse };
 }
 
 export default useSubmit;
