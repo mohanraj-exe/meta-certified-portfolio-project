@@ -49,6 +49,12 @@ const LandingSection = () => {
   useEffect(() => {
     if (response) {
       onOpen(response.type, response.message);
+
+      // coursera-solution
+
+      // if (response.type === 'success') { 
+      //   formik.resetForm(); 
+      // } 
       clearResponse();
     }
     return () => {

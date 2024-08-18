@@ -38,18 +38,40 @@ const socials = [
 ];
 
 const Header = () => {
-  const [showHeader, setShowHeader] = useState(true);
-  let lastScrollY = useRef(0);
+  // const [showHeader, setShowHeader] = useState(true);
+  // let lastScrollY = useRef(0);
+
+  // coursera-solution
+  let headerRef = useRef(0);
 
   useEffect(() => {
+    // my implementation
+
+    // const handleScroll = () => {
+    //   let currentScrollY = window.scrollY;
+    //   if (currentScrollY > lastScrollY.current) {
+    //     setShowHeader(false);
+    //   } else {
+    //     setShowHeader(true)
+    //   }
+    //   lastScrollY.current = currentScrollY
+    // };
+
+    // coursera-solution
+    let prevScrollPos = window.scrollY;
     const handleScroll = () => {
-      let currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY.current) {
-        setShowHeader(false);
-      } else {
-        setShowHeader(true)
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
       }
-      lastScrollY.current = currentScrollY
+      if (currentScrollPos > prevScrollPos) {
+        headerElement.style.transform = "translateY(-200px)";
+      } else {
+        headerElement.style.transform = "translateY(0)";
+      }
+      // lastScrollY.current = currentScrollY
+      prevScrollPos = currentScrollPos;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -72,12 +94,13 @@ const Header = () => {
 
   return (
     <Box
+      ref={headerRef}
       position="fixed"
       top={0}
       left={0}
       right={0}
       translateY={0}
-      transform={showHeader ? 'translateY(0)' : 'translateY(-200px)'}
+      // transform={showHeader ? 'translateY(0)' : 'translateY(-200px)'}
       transitionProperty="transform"
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
@@ -94,7 +117,8 @@ const Header = () => {
             {/* Add social media links based on the `socials` data */}
             <HStack spacing={6}>
               {socials.map((item) =>
-                <a key={item.id} href={item.url}>
+                <a key={item.id} href={item.url} target="_blank"
+                  rel="noopener noreferrer" >
                   <FontAwesomeIcon icon={item.icon} size="2x" />
                 </a>)}
             </HStack>
